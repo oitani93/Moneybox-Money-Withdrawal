@@ -9,7 +9,7 @@ MY CHANGES:
 - The service will take care of updating properties(balance, withdrawn, paidIn) of an Account if validation passes.
 
 - The service will also handle validation. 
-***All validation logic (i.e to decide whether a validation should be thrown) are retrieved from the Account class***
+***All validation logic (i.e to decide whether an exception should be thrown) are retrieved from the Account class***
 
 - Once the relevant method in the service gets called, the TransferMoney / WithdrawMoney classes in the Features folder
 will call the Update method from the accountRepository. On success, a check is placed by calling the logic from the accounts
