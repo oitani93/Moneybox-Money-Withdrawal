@@ -4,7 +4,7 @@ MY CHANGES:
 
 - I created a new service(AccountService) in the services folder under the domain folder.
 
-- The service will be called from the following, WithdrawMoney and TransferMoney.
+- The service will be called from the following classes, WithdrawMoney and TransferMoney.
 
 - The service will take care of updating properties(balance, withdrawn, paidIn) of an Account if validation passes.
 
