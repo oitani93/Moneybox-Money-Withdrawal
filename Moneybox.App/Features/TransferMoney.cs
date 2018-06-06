@@ -8,15 +8,12 @@ namespace Moneybox.App.Features
     {
         private IAccountRepository _accountRepository;
         private INotificationService _notificationService;
-        private IAccountService _accountService;
 
         public TransferMoney(IAccountRepository accountRepository,
-            INotificationService notificationService,
-            IAccountService accountService)
+            INotificationService notificationService)
         {
             _accountRepository = accountRepository;
             _notificationService = notificationService;
-            _accountService = accountService;
         }
 
         public void Execute(Guid fromAccountId, Guid toAccountId, decimal amount)
@@ -24,21 +21,13 @@ namespace Moneybox.App.Features
             var fromAccount = _accountRepository.GetAccountById(fromAccountId);
             var toAccount = _accountRepository.GetAccountById(toAccountId);
 
-            _accountService.Transfer(fromAccount, toAccount, amount);
+            fromAccount.Transfer(toAccount, amount);
 
             _accountRepository.Update(fromAccount);
-
-            if (fromAccount.IsFundsLow(amount))
-            {
-                _notificationService.NotifyFundsLow(fromAccount.User.Email);
-            }
+            fromAccount.SendNotifyIsFundsLowEmail(amount, _notificationService);
 
             _accountRepository.Update(toAccount);
-
-            if (toAccount.IsApproachingPayInLimit(amount))
-            {
-                _notificationService.NotifyApproachingPayInLimit(toAccount.User.Email);
-            }
+            toAccount.SendNotifyIsApproachingPayInLimitEmail(amount, _notificationService);
         }
     }
 }
