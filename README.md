@@ -1,5 +1,18 @@
 # Moneybox-Money-Withdrawal
 
+I have attempted to  make this as much domain driven as possible.
+
+The article I read was interesting and helpful, and helped me learn more about domain driven models.
+
+Therefore, I have now removed the accountService that I originally implemented, and put all the logic in the domain model.
+
+I have also attempted to create a domain event for when balance is equal to 0 and successfully created a test case for it.
+
+I would appreciate to get more feedback from you.
+
+Many thanks.
+
+---------------------------------------------------------------
 MY CHANGES:
 
 - I created a new service(AccountService) in the services folder under the domain folder.
