@@ -20,7 +20,7 @@ namespace Moneybox.App.Features
         {
             var from = _accountRepository.GetAccountById(fromAccountId);
 
-            from.Withdraw(amount);
+            from.DebitAccount(amount);
 
             _accountRepository.Update(from);
             from.SendNotifyIsFundsLowEmail(amount, _notificationService);

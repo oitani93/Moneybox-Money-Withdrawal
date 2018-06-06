@@ -37,22 +37,20 @@ namespace Moneybox.App
 
         public ICollection<IDomainEvent> Events { get; private set; }
 
-        public void Transfer(Account toAccount, decimal amount)
+        public void DebitAccount(decimal amount)
         {
             ValidateAmount(amount);
-            ValidateAccount(amount);
-            ValidateAccount(toAccount, amount);
-            UpdateBalance(amount);
-            UpdateBalance(toAccount, amount);
-            UpdatePaidIn(toAccount, amount);
+            ValidateDebitedAccount(amount);
+            UpdateDebitedBalance(amount);
+            UpdateWithdrawn(amount);
         }
 
-        public void Withdraw(decimal amount)
+        public void CreditAccount(decimal amount)
         {
             ValidateAmount(amount);
-            ValidateAccount(amount);
-            UpdateBalance(amount);
-            UpdateWithdrawn(amount);
+            ValidateCreditedAccount(amount);
+            UpdateCreditedBalance(amount);
+            UpdatePaidIn(amount);
         }
 
         public void SendNotifyIsFundsLowEmail(decimal amount, INotificationService _notificationService)
@@ -79,7 +77,7 @@ namespace Moneybox.App
             }
         }
 
-        private void ValidateAccount(decimal amount)
+        private void ValidateDebitedAccount(decimal amount)
         {
             if (IsInsufficientFunds(amount))
             {
@@ -87,13 +85,9 @@ namespace Moneybox.App
             }
         }
 
-        private void ValidateAccount(Account account, decimal amount)
+        private void ValidateCreditedAccount(decimal amount)
         {
-            if (account == null)
-            {
-                throw new InvalidOperationException("Invalid Account! Please try again");
-            }
-            else if (account.IsAccountPayLimitReached(amount))
+            if (IsAccountPayLimitReached(amount))
             {
                 throw new InvalidOperationException("Account pay in limit reached");
             }
@@ -107,28 +101,28 @@ namespace Moneybox.App
 
         private bool IsApproachingPayInLimit(decimal amount) => (PayInLimit - (PaidIn + amount)) < FundsLowLimit;
 
-        private void UpdateBalance(decimal amount)
+        private void UpdateDebitedBalance(decimal amount)
         {
             Balance -= amount;
-            CreateEventBalanceIsZero(this);
+            CreateEventBalanceIsZero();
         }
 
-        private void UpdateBalance(Account account, decimal amount)
+        private void UpdateCreditedBalance(decimal amount)
         {
-            account.Balance += amount;
-            CreateEventBalanceIsZero(account);
+            Balance += amount;
+            CreateEventBalanceIsZero();
         }
 
-        private void CreateEventBalanceIsZero(Account account)
+        private void CreateEventBalanceIsZero()
         {
-            if (account.Balance == 0)
+            if (Balance == 0)
             {
-                Events.Add(account);
+                Events.Add(this);
             }
         }
 
         private void UpdateWithdrawn(decimal amount) => Withdrawn += amount;
 
-        private void UpdatePaidIn(Account account, decimal amount) => account.PaidIn += amount;
+        private void UpdatePaidIn(decimal amount) => PaidIn += amount;
     }
 }

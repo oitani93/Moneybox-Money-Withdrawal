@@ -21,7 +21,8 @@ namespace Moneybox.App.Features
             var fromAccount = _accountRepository.GetAccountById(fromAccountId);
             var toAccount = _accountRepository.GetAccountById(toAccountId);
 
-            fromAccount.Transfer(toAccount, amount);
+            fromAccount.DebitAccount(amount);
+            toAccount.CreditAccount(amount);
 
             _accountRepository.Update(fromAccount);
             fromAccount.SendNotifyIsFundsLowEmail(amount, _notificationService);
